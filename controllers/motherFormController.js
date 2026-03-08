@@ -1,66 +1,51 @@
 import MotherForm from "../models/MotherForm.js";
 
+// legacy single-record helpers kept for compatibility (not used by new UI)
 export const saveMotherForm = async (req, res) => {
   try {
     const formData = req.body;
-    const userId = req.user; 
+    const userId = req.user;
 
-    // check if form exists for user
-    let motherForm = await MotherForm.findOne({ userId });
-
-    if (motherForm) {
-      // update existing form
-      motherForm = await MotherForm.findOneAndUpdate(
-        { userId },
-        { ...formData },
-        { new: true }
-      );
-    } else {
-      // create new form
-      motherForm = new MotherForm({
-        ...formData,
-        userId
-      });
-      await motherForm.save();
-    }
+    const motherForm = await MotherForm.findOneAndUpdate(
+      { userId },
+      { ...formData, userId },
+      { new: true, upsert: true }
+    );
 
     res.status(200).json({
       success: true,
       message: "Mother form saved successfully",
-      data: motherForm
+      data: motherForm,
     });
   } catch (error) {
     console.error("Error saving mother form:", error);
     res.status(500).json({
       success: false,
       message: "Error saving mother form",
-      error: error.message
+      error: error.message,
     });
   }
 };
 
-// get mother form
 export const getMotherForm = async (req, res) => {
   try {
     const userId = req.user;
-    
     const motherForm = await MotherForm.findOne({ userId });
 
     res.status(200).json({
       success: true,
-      data: motherForm || {}
+      data: motherForm || {},
     });
   } catch (error) {
     console.error("Error fetching mother form:", error);
     res.status(500).json({
       success: false,
       message: "Error fetching mother form",
-      error: error.message
+      error: error.message,
     });
   }
 };
 
-// update specific section
 export const updateSection = async (req, res) => {
   try {
     const { section } = req.params;
@@ -69,21 +54,21 @@ export const updateSection = async (req, res) => {
 
     const motherForm = await MotherForm.findOneAndUpdate(
       { userId },
-      { ...sectionData },
+      { ...sectionData, userId },
       { new: true, upsert: true }
     );
 
     res.status(200).json({
       success: true,
       message: `${section} section updated successfully`,
-      data: motherForm
+      data: motherForm,
     });
   } catch (error) {
     console.error("Error updating section:", error);
     res.status(500).json({
       success: false,
       message: "Error updating section",
-      error: error.message
+      error: error.message,
     });
   }
 };

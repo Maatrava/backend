@@ -6,6 +6,7 @@ import authRoutes from "./routes/auth.js";
 import onboardingRoutes from "./routes/onboarding.js";
 import articlesRoutes from "./routes/articles.js";
 import motherFormRoutes from "./routes/motherForm.js";
+import appointmentsRoutes from "./routes/appointments.js";
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/onboarding", onboardingRoutes);
 app.use("/api/articles", articlesRoutes);
 app.use("/api/mother-form", motherFormRoutes); 
+app.use("/api/appointments", appointmentsRoutes);
 
 // MongoDB Connection & Server Start
 const MONGO_URI = process.env.MONGO_URI;
