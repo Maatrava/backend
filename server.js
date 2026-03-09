@@ -8,6 +8,8 @@ import articlesRoutes from "./routes/articles.js";
 import motherFormRoutes from "./routes/motherForm.js";
 import aiRoutes from "./routes/ai-routes.js";
 import appointmentsRoutes from "./routes/appointments.js";
+import userRoutes from "./routes/user.js";
+import preferencesRoutes from "./routes/preferences.js";
 
 dotenv.config();
 const app = express();
@@ -24,7 +26,10 @@ app.use("/api/auth", authRoutes);
 app.use("/api/onboarding", onboardingRoutes);
 app.use("/api/articles", articlesRoutes);
 app.use("/api/mother-form", motherFormRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/user/preferences", preferencesRoutes);
 app.use("/api", aiRoutes);
+
 app.use("/api/appointments", appointmentsRoutes);
 
 
