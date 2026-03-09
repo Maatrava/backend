@@ -74,6 +74,7 @@ router.get("/chat", auth, async (req, res) => {
 router.get("/insights", auth, async (req, res) => {
     try {
         const userId = req.user;
+        console.log("Fetching insights for user:", userId);
 
         // 1. Mother Recovery
         const motherForm = await MotherForm.findOne({ userId });
