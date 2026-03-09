@@ -37,9 +37,6 @@ app.use("/api/user/preferences", preferencesRoutes);
 app.use("/api/reports", reportsRoutes);
 app.use("/api/messages", messagesRoutes);
 app.use("/api", aiRoutes);
-
-
-
 app.use("/api/appointments", appointmentsRoutes);
 
 
