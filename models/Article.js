@@ -5,6 +5,7 @@ const articleSchema = new mongoose.Schema({
     content: { type: String, required: true },
     category: { type: String, required: true },
     author: { type: String, required: true },
+    url: { type: String, default: "" },
 }, { timestamps: true });
 
 const Article = mongoose.model("Article", articleSchema);
