@@ -25,8 +25,8 @@ app.use("/api/onboarding", onboardingRoutes);
 app.use("/api/articles", articlesRoutes);
 app.use("/api/mother-form", motherFormRoutes);
 app.use("/api", aiRoutes);
-app.use("/api/mother-form", motherFormRoutes); 
 app.use("/api/appointments", appointmentsRoutes);
+
 
 // MongoDB Connection & Server Start
 const MONGO_URI = process.env.MONGO_URI;
