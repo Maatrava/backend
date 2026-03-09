@@ -9,7 +9,6 @@ import motherFormRoutes from "./routes/motherForm.js";
 import aiRoutes from "./routes/ai-routes.js";
 
 dotenv.config();
-console.log(process.env.MONGO_URI);
 const app = express();
 
 // Middleware
