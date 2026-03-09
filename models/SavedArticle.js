@@ -3,6 +3,10 @@ import mongoose from "mongoose";
 const savedArticleSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     articleId: { type: mongoose.Schema.Types.ObjectId, ref: "Article", required: true },
+    title: { type: String, required: true },
+    category: { type: String, required: true },
+    description: { type: String, required: true },
+    url: { type: String, default: "" },
 }, { timestamps: true });
 
 // Ensure a user can't save the same article twice
