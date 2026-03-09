@@ -1,6 +1,7 @@
 import MotherForm from "../models/MotherForm.js";
+import MotherRecoveryMetrics from "../models/MotherRecoveryMetrics.js";
+import MotherMentalHealth from "../models/MotherMentalHealth.js";
 
-// legacy single-record helpers kept for compatibility (not used by new UI)
 export const saveMotherForm = async (req, res) => {
   try {
     const formData = req.body;
@@ -77,12 +78,12 @@ export const updateSection = async (req, res) => {
 export const getReminders = async (req, res) => {
   try {
     const userId = req.user;
-    
+
     const motherForm = await MotherForm.findOne({ userId });
-    
+
     // generate reminders based on form data
     const reminders = [];
-    
+
     if (motherForm) {
       // check for upcoming follow-up
       if (motherForm.nextFollowUp) {
@@ -94,7 +95,7 @@ export const getReminders = async (req, res) => {
           type: "appointment"
         });
       }
-      
+
       // can add more
     }
 
@@ -120,5 +121,76 @@ export const getReminders = async (req, res) => {
       message: "Error fetching reminders",
       error: error.message
     });
+  }
+};
+
+// POST /recovery
+export const addRecoveryMetric = async (req, res) => {
+  try {
+    const userId = req.user;
+    const { weekOfPostpartum, bpSystolic, hemoglobin, weight } = req.body;
+
+    const newMetric = new MotherRecoveryMetrics({
+      userId,
+      weekOfPostpartum,
+      bpSystolic,
+      hemoglobin,
+      weight
+    });
+
+    await newMetric.save();
+
+    res.status(201).json({ success: true, data: newMetric });
+  } catch (error) {
+    console.error("Error adding recovery metric:", error);
+    res.status(500).json({ success: false, message: "Error adding recovery metric", error: error.message });
+  }
+};
+
+// GET /recovery
+export const getRecoveryMetrics = async (req, res) => {
+  try {
+    const userId = req.user;
+    const metrics = await MotherRecoveryMetrics.find({ userId }).sort({ dateRecorded: 1 });
+
+    res.status(200).json({ success: true, data: metrics });
+  } catch (error) {
+    console.error("Error fetching recovery metrics:", error);
+    res.status(500).json({ success: false, message: "Error fetching recovery metrics", error: error.message });
+  }
+};
+
+// POST /mental-health
+export const addMentalHealthMetric = async (req, res) => {
+  try {
+    const userId = req.user;
+    const { sleepHours, moodScore, dateRecorded } = req.body;
+
+    const newMetric = new MotherMentalHealth({
+      userId,
+      sleepHours,
+      moodScore,
+      dateRecorded: dateRecorded || new Date()
+    });
+
+    await newMetric.save();
+
+    res.status(201).json({ success: true, data: newMetric });
+  } catch (error) {
+    console.error("Error adding mental health metric:", error);
+    res.status(500).json({ success: false, message: "Error adding mental health metric", error: error.message });
+  }
+};
+
+// GET /mental-health
+export const getMentalHealthMetrics = async (req, res) => {
+  try {
+    const userId = req.user;
+    const metrics = await MotherMentalHealth.find({ userId }).sort({ dateRecorded: 1 });
+
+    res.status(200).json({ success: true, data: metrics });
+  } catch (error) {
+    console.error("Error fetching mental health metrics:", error);
+    res.status(500).json({ success: false, message: "Error fetching mental health metrics", error: error.message });
   }
 };
