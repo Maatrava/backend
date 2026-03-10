@@ -19,18 +19,22 @@ router.get("/profile", auth, async (req, res) => {
 // PUT /api/user/profile
 router.put("/profile", auth, async (req, res) => {
     try {
-        const { name, phone, password, profilePicture } = req.body;
+        const { name, email, phone, password, profilePicture } = req.body;
 
         // Validation
         if (!name || name.trim() === "") {
             return res.status(400).json({ error: "Name is required" });
         }
 
+        if (!email || email.trim() === "") {
+            return res.status(400).json({ error: "Email is required" });
+        }
+
         if (phone && !/^\+?[\d\s-]{10,}$/.test(phone)) {
             return res.status(400).json({ error: "Invalid phone number format" });
         }
 
-        const updateData = { name, phone, profilePicture };
+        const updateData = { name, email, phone, profilePicture };
 
         if (password) {
             const salt = await bcrypt.genSalt(10);
