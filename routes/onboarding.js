@@ -3,6 +3,8 @@ import auth from "../middleware/auth.js";
 import Onboarding from "../models/Onboarding.js";
 import User from "../models/User.js";
 
+import UserPreference from "../models/UserPreference.js";
+
 const router = express.Router();
 
 router.post("/", auth, async (req, res) => {
@@ -24,8 +26,6 @@ router.post("/", auth, async (req, res) => {
         // Update user onboarding status
         await User.findByIdAndUpdate(req.user, { onboardingCompleted: true });
 
-<<<<<<< Updated upstream
-=======
         // Save to UserPreference as well
         await UserPreference.findOneAndUpdate(
             { userId: req.user },
@@ -35,7 +35,6 @@ router.post("/", auth, async (req, res) => {
             { upsert: true }
         );
 
->>>>>>> Stashed changes
         res.json(onboarding);
     } catch (err) {
         res.status(500).json({ error: err.message });
