@@ -5,6 +5,9 @@ import User from "../models/User.js";
 import auth from "../middleware/auth.js";
 import mongoose from "mongoose";
 import { sendResetPasswordEmail } from "../services/email-service.js";
+import { OAuth2Client } from "google-auth-library";
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const router = express.Router();
 
@@ -124,6 +127,52 @@ router.post("/reset-password", async (req, res) => {
         res.json({ message: "Password has been reset successfully" });
     } catch (err) {
         res.status(400).json({ error: "Invalid or expired token" });
+    }
+});
+
+// Google Login
+router.post("/google", async (req, res) => {
+    try {
+        const { credential } = req.body;
+        const ticket = await client.verifyIdToken({
+            idToken: credential,
+            audience: process.env.GOOGLE_CLIENT_ID,
+        });
+        const payload = ticket.getPayload();
+        const { sub: googleId, email, name, picture } = payload;
+
+        let user = await User.findOne({ email });
+
+        if (!user) {
+            // Create new user if they don't exist
+            user = new User({
+                name,
+                email,
+                googleId,
+                // No password for Google users
+            });
+            await user.save();
+        } else if (!user.googleId) {
+            // If user exists but was registered via email, link Google account
+            user.googleId = googleId;
+            await user.save();
+        }
+
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+
+        res.json({
+            token,
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                onboardingCompleted: user.onboardingCompleted,
+                picture: picture, // Include picture from Google
+            },
+        });
+    } catch (err) {
+        console.error("Google verify error:", err);
+        res.status(401).json({ error: "Invalid Google token" });
     }
 });
 
