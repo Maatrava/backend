@@ -8,13 +8,12 @@ const router = express.Router();
 
 router.post("/", auth, async (req, res) => {
     try {
-        const { preferredLanguage, feedingType, babyAgeWeeks, deliveryType, helpFocus } = req.body;
+        const { feedingType, babyAgeWeeks, deliveryType, helpFocus } = req.body;
 
         // Upsert onboarding data
         const onboarding = await Onboarding.findOneAndUpdate(
             { userId: req.user },
             {
-                preferredLanguage,
                 feedingType,
                 babyAgeWeeks,
                 deliveryType,
@@ -30,7 +29,6 @@ router.post("/", auth, async (req, res) => {
         await UserPreference.findOneAndUpdate(
             { userId: req.user },
             {
-                language: preferredLanguage,
                 interests: helpFocus
             },
             { upsert: true }
