@@ -22,10 +22,10 @@ router.get("/", auth, async (req, res) => {
 // POST /api/user/preferences
 router.post("/", auth, async (req, res) => {
     try {
-        const { language, theme, notificationSettings, interests } = req.body;
+        const { theme, notificationSettings, interests } = req.body;
         const preferences = await UserPreference.findOneAndUpdate(
             { userId: req.user },
-            { language, theme, notificationSettings, interests },
+            { theme, notificationSettings, interests },
             { new: true, upsert: true }
         );
         res.json(preferences);

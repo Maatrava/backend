@@ -155,7 +155,6 @@ router.get("/insights", auth, async (req, res) => {
                 activityTimeline: chatStats
             },
             personalization: {
-                language: prefs?.language,
                 interests: prefs?.interests
             }
         });
